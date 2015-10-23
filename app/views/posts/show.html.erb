@@ -1,0 +1,25 @@
+<h1><%= @post.title %></h1>
+<h3><%= @post.content %></h3>
+<% if @post.author == current_user %>
+  <a href="<%= edit_post_url %>">Edit post</a>
+<% end %>
+
+<br>
+<br>
+
+Comments:<br>
+<% @all_comments.select { |comment| comment.parent_comment_id.nil? }
+  .sort_by(&:score).reverse.each do |comment| %>
+  <%= render "comments/comment", c1: comment, parents: @comments_by_parent_id %>
+<% end %>
+
+<br><br>
+
+Write a new comment:
+<form action="<%= comments_url %>" method="POST">
+  <%= auth_token %>
+  <input type='hidden' name='comment[post_id]' value='<%= @post.id %>'>
+  <textarea name="comment[content]"></textarea>
+  <br>
+  <button>Create!</button>
+</form>

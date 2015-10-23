@@ -1,0 +1,27 @@
+<% action_url = ( action == :new ? posts_url : post_url(post) ) %>
+<% method = ( action == :new ? "POST" : "PATCH") %>
+
+<h1><%= header %></h1>
+
+<form action='<%= action_url %>' method="POST">
+  <input type='hidden' name='_method' value='<%= method %>'>
+  <%= auth_token %>
+
+  <label for='title'>Post title:</label>
+  <input type='text' name='post[title]' value='<%= post.title %>'>
+  <br>
+
+  <label>Pick sub(s):</label>
+  <% subs.each do |sub| %>
+  <input type='checkbox' id='<%= sub.id %>' name='post[sub_ids][]' value='<%= sub.id %>'
+    <%= 'checked' if post.subs.include?(sub) %>>
+  <label for='<%= sub.id %>'><%= sub.title %></label>
+  <% end %>
+  <br>
+
+  <label for='description'>Content:</label>
+  <textarea id='description' name='post[content]'><%= post.content %></textarea>
+  <br>
+
+  <button>Submit</button>
+</form>

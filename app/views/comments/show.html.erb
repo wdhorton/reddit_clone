@@ -1,0 +1,14 @@
+<p><%= @comment.content %> <br>
+By <%= @comment.author.username %><br>
+</p>
+<br>
+
+Write a new comment:
+<form action="<%= comments_url %>" method="POST">
+  <%= auth_token %>
+  <input type='hidden' name='comment[parent_comment_id]' value='<%= @comment.id %>'>
+  <input type='hidden' name='comment[post_id]' value='<%= @comment.post_id %>'>
+  <textarea name="comment[content]"></textarea>
+  <br>
+  <button>Create!</button>
+</form>

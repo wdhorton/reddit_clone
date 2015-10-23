@@ -14,7 +14,7 @@ class SubsController < ApplicationController
 
     if @sub.save
       flash[:notice] = ["Welcome #{@sub.title}!"]
-      redirect_to sub_url(@sub)
+      redirect_to @sub
     else
       flash[:failure] = @sub.errors.full_messages
       render :new
@@ -38,7 +38,7 @@ class SubsController < ApplicationController
 
     if @sub.update_attributes(sub_params)
       flash[:notice] = ["Sub successfully updated!"]
-      redirect_to sub_url(@sub)
+      redirect_to @sub
     else
       flash[:failure] = @sub.errors.full_messages
       render :edit
@@ -58,8 +58,9 @@ class SubsController < ApplicationController
   end
 
   def non_mods_cant_edit_subs
-    unless current_user == Sub.find(params[:id]).moderator
-      redirect_to sub_url(params[:id])
+    sub = Sub.find(params[:id])
+    unless current_user == sub.moderator
+      redirect_to sub
     end
   end
 

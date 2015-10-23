@@ -4,6 +4,7 @@ class PostsController < ApplicationController
 
   def new
     @post = Post.new
+    @subs = Sub.all
     render :new
   end
 
@@ -22,12 +23,14 @@ class PostsController < ApplicationController
 
   def show
     @post = Post.find(params[:id])
-
+    @comments_by_parent_id = @post.comments_by_parent_id
+    @all_comments = @post.comments
     render :show
   end
 
   def edit
     @post = Post.find(params[:id])
+    @subs = Sub.all
 
     render :edit
   end
@@ -37,17 +40,35 @@ class PostsController < ApplicationController
 
     if @post.update_attributes(post_params)
       flash[:notice] = ["Post successfully updated!"]
-      redirect_to sub_url(@post)
+      redirect_to post_url(@post)
     else
       flash[:failure] = @post.errors.full_messages
       render :edit
     end
   end
 
+  def upvote
+    vote = Vote.new(user_id: current_user.id)
+    post = Post.find(params[:id])
+    vote.votable = post
+    vote.save
+
+    redirect_to sub_url(params[:sub][:id])
+  end
+
+  def downvote
+    vote = Vote.new(user_id: current_user.id, upvote: false)
+    post = Post.find(params[:id])
+    vote.votable = post
+    vote.save
+
+    redirect_to sub_url(params[:sub][:id])
+  end
+
   private
 
   def post_params
-    params.require(:post).permit(:title, :url, :content, :sub_id)
+    params.require(:post).permit(:title, :url, :content, sub_ids: [])
   end
 
   def ensure_logged_in
@@ -56,11 +77,10 @@ class PostsController < ApplicationController
     end
   end
 
-  def non_mods_cant_edit_subs
+  def non_authors_cant_edit_post
     unless current_user == Post.find(params[:id]).author
       redirect_to post_url(params[:id])
     end
   end
-
 
 end

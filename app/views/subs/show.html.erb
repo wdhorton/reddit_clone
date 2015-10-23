@@ -1,5 +1,23 @@
 <h1><%= @sub.title %></h1>
 <h3><%= @sub.description %></h3>
+
 <% if @sub.moderator == current_user %>
   <a href="<%= edit_sub_url %>">Edit sub</a>
 <% end %>
+
+<a href='<%= new_post_url %>'>Create a new post</a>
+<br>
+
+<ul>
+<% @sub.posts.sort_by(&:score).reverse.each do |post| %>
+  <li><a href='<%= post_url(post) %>'><%= post.title %></a></li>
+  <li>Score: <%= post.score %></li>
+  <% ["upvote", "downvote"].each do |vote| %>
+    <form action="<%= send("#{vote}_post_url", post) %>" method="POST">
+      <%= auth_token %>
+      <input type="hidden" name="sub[id]" value="<%= @sub.id %>">
+      <button><%= vote.upcase %></button>
+    </form>
+  <% end %>
+<% end %>
+</ul>

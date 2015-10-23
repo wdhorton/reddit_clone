@@ -1,0 +1,18 @@
+<p><%= c1.content %> <br>
+By <%= c1.author.username %><br>
+Created at <%= c1.created_at %><br>
+<a href='<%= comment_url(c1) %>'>Go to comment</a><br>
+Score: <%= c1.score %>
+</p>
+<% ["upvote", "downvote"].each do |vote| %>
+  <form action="<%= send("#{vote}_comment_url", c1) %>" method="POST">
+    <%= auth_token %>
+    <button><%= vote.upcase %></button>
+  </form>
+<% end %>
+
+<ul>
+  <% parents[c1.id].sort_by(&:score).reverse.each do |c2| %>
+    <%= render("comments/comment", c1: c2, parents: parents)  %>
+  <% end %>
+</ul>
