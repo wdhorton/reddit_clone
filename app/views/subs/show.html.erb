@@ -9,7 +9,7 @@
 <br>
 
 <ul>
-<% @sub.posts.sort_by(&:score).reverse.each do |post| %>
+<% @posts.each do |post| %>
   <li><a href='<%= post_url(post) %>'><%= post.title %></a></li>
   <li>Score: <%= post.score %></li>
   <% ["upvote", "downvote"].each do |vote| %>
@@ -21,3 +21,6 @@
   <% end %>
 <% end %>
 </ul>
+
+<%= paginate @posts %>
+<%= page_entries_info @posts %>

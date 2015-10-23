@@ -23,7 +23,7 @@ class SubsController < ApplicationController
 
   def show
     @sub = Sub.find(params[:id])
-
+    @posts = @sub.posts.page(params[:page]).per(2)
     render :show
   end
 
