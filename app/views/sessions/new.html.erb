@@ -1,0 +1,21 @@
+<h1>Log In!</h1>
+
+<ul>
+  <% flash.each do |err_type, err_msg| %>
+    <li><%= err_msg %></li>
+  <% end %>
+</ul>
+
+<form action='<%= session_url %>' method="POST">
+  <%= auth_token %>
+
+  <label for='username'>Username:</label>
+  <input type='text' name='user[username]' value='<%= @user.username %>'>
+  <br>
+
+  <label for='password'>Password:</label>
+  <input type='password' name='user[password]' value=''>
+  <br>
+
+  <button>Submit</button>
+</form>
